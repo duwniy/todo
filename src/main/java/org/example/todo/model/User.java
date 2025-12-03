@@ -8,11 +8,13 @@ import java.util.List;
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private int id; // <-- НОВОЕ: ID, сгенерированный PostgreSQL
     private String username;
     private String password;
     private LocalDateTime createdDate;
     private List<Task> tasks;
 
+    // Конструктор для регистрации (ID еще не известен)
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -20,7 +22,24 @@ public class User implements Serializable {
         this.tasks = new ArrayList<>();
     }
 
+    // Конструктор для загрузки из БД (ID и все поля известны)
+    public User(int id, String username, String password, LocalDateTime createdDate) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.createdDate = createdDate;
+        this.tasks = new ArrayList<>(); // Задачи будут загружены TaskService позже
+    }
+
     // Getters and Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -60,7 +79,8 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
+                "id=" + id +
+                ", username='" + username + '\'' +
                 ", createdDate=" + createdDate +
                 ", tasksCount=" + tasks.size() +
                 '}';

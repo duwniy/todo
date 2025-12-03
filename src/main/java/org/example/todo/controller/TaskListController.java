@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import org.example.todo.model.Task;
 import org.example.todo.model.User;
 import org.example.todo.service.UserService;
+import org.example.todo.service.TaskService; // <-- НОВЫЙ ИМПОРТ
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,40 +22,27 @@ import java.util.stream.Collectors;
 public class TaskListController {
     @FXML
     private ListView<Task> taskListView;
-    @FXML
-    private TextField titleField;
-    @FXML
-    private TextArea descriptionArea;
-    @FXML
-    private ComboBox<String> categoryCombo;
-    @FXML
-    private ComboBox<Task.Priority> priorityCombo;
-    @FXML
-    private CheckBox completedCheckBox;
-    @FXML
-    private TextField searchField;
-    @FXML
-    private ComboBox<String> filterCombo;
-    @FXML
-    private Label taskCountLabel;
-    @FXML
-    private Label userNameLabel;
-    @FXML
-    private DatePicker dueDatePicker;
-    @FXML
-    private Button logoutButton;
+    @FXML private TextField titleField;
+    @FXML private TextArea descriptionArea;
+    @FXML private ComboBox<String> categoryCombo;
+    @FXML private ComboBox<Task.Priority> priorityCombo;
+    @FXML private CheckBox completedCheckBox;
+    @FXML private TextField searchField;
+    @FXML private ComboBox<String> filterCombo;
+    @FXML private Label taskCountLabel;
+    @FXML private Label userNameLabel;
+    @FXML private DatePicker dueDatePicker;
+    @FXML private Button logoutButton;
 
     private User currentUser;
     private Task selectedTask = null;
     private UserService userService = new UserService();
+    private TaskService taskService = new TaskService(); // <-- ИНИЦИАЛИЗАЦИЯ НОВОГО СЕРВИСА
     private ObservableList<Task> displayedTasks = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
         setupComboBoxes();
-        // ВАЖНОЕ ИЗМЕНЕНИЕ: УДАЛЕН ВЫЗОВ updateTaskList() ОТСЮДА,
-        // чтобы избежать NullPointerException, так как currentUser еще не установлен.
-
         taskListView.setItems(displayedTasks);
         setupTaskListCellFactory();
 
@@ -70,10 +58,12 @@ public class TaskListController {
     public void setCurrentUser(User user) {
         this.currentUser = user;
         userNameLabel.setText("User: " + user.getUsername());
-        // ВАЖНОЕ ИЗМЕНЕНИЕ: ВЫЗЫВАЕМ ЗАГРУЗКУ/ОБНОВЛЕНИЕ ЗДЕСЬ, когда currentUser установлен.
+        // Вызываем загрузку задач через TaskService
         loadUserTasks();
         updateTaskList();
     }
+
+    // ... (Методы setupComboBoxes, setupTaskListCellFactory, TaskListCell остаются без изменений) ...
 
     private void setupComboBoxes() {
         ObservableList<String> categories = FXCollections.observableArrayList(
@@ -190,7 +180,7 @@ public class TaskListController {
 
     @FXML
     protected void onLogoutClick() {
-        saveUserTasks();
+        saveUserTasks(); // <-- Сохраняем задачи перед выходом
         try {
             URL resource = getClass().getResource("/org/example/todo/login.fxml");
             if (resource == null) {
@@ -209,7 +199,7 @@ public class TaskListController {
     }
 
     private void filterTasks() {
-        if (currentUser == null) return; // Защита на случай, если initialize вызывает до setCurrentUser, хотя мы это исправили
+        if (currentUser == null) return;
 
         String searchText = searchField.getText().toLowerCase();
         String filterType = filterCombo.getValue();
@@ -279,16 +269,20 @@ public class TaskListController {
         taskCountLabel.setText("Tasks: " + total + " | Completed: " + completed);
     }
 
+    // --- ЛОГИКА СОХРАНЕНИЯ/ЗАГРУЗКИ (TaskService) ---
+
     private void saveUserTasks() {
-        userService.updateUser(currentUser);
+        // Вызывает TaskService для сохранения задач в файл (tasks_username.dat)
+        taskService.saveUserTasks(currentUser);
     }
 
     private void loadUserTasks() {
-        User loadedUser = userService.getUserByUsername(currentUser.getUsername());
-        if (loadedUser != null) {
-            currentUser.setTasks(loadedUser.getTasks());
-        }
+        // Вызывает TaskService для загрузки задач из файла
+        List<Task> loadedTasks = taskService.loadUserTasks(currentUser.getUsername());
+        currentUser.setTasks(loadedTasks);
     }
+
+    // --- ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ---
 
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);

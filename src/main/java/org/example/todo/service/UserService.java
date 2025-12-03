@@ -1,20 +1,22 @@
 package org.example.todo.service;
 
+import org.example.todo.db.DatabaseConfig;
 import org.example.todo.model.User;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class UserService {
-    private final String USERS_FILE = "users.dat";
-    private List<User> users;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     public UserService() {
-        loadUsers();
+        // Инициализация БД при создании сервиса
+        DatabaseConfig.initializeDatabase();
     }
 
     public User authenticate(String username, String password) {
         User user = getUserByUsername(username);
+        // Сравниваем пароль в Java-коде
         if (user != null && user.getPassword().equals(password)) {
             return user;
         }
@@ -22,60 +24,51 @@ public class UserService {
     }
 
     public User getUserByUsername(String username) {
-        for (User user : users) {
-            if (user.getUsername().equalsIgnoreCase(username)) {
-                return user;
+        // ФИКС: Явно указываем схему 'public' для поиска таблицы
+        String sql = "SELECT id, password, created_date FROM public.users WHERE username = ?";
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                String passwordDb = rs.getString("password");
+                LocalDateTime createdDate = rs.getTimestamp("created_date").toLocalDateTime();
+
+                // ВНИМАНИЕ: Если вы используете хэширование, здесь нужно загружать хэш, а не чистый пароль.
+                return new User(id, username, passwordDb, createdDate);
             }
+        } catch (SQLException e) {
+            System.err.println("Error fetching user: " + e.getMessage());
         }
         return null;
     }
 
     public void saveUser(User user) {
-        if (getUserByUsername(user.getUsername()) == null) {
-            users.add(user);
-            saveAllUsers();
+        if (getUserByUsername(user.getUsername()) != null) {
+            System.err.println("User already exists, cannot save.");
+            return;
         }
-    }
 
-    public void updateUser(User user) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getUsername().equalsIgnoreCase(user.getUsername())) {
-                // Заменяем существующего пользователя на обновленный объект
-                users.set(i, user);
-                saveAllUsers();
-                break;
+        // ФИКС: Явно указываем схему 'public' для вставки
+        String sql = "INSERT INTO public.users (username, password, created_date) VALUES (?, ?, ?) RETURNING id";
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getPassword());
+            pstmt.setTimestamp(3, Timestamp.valueOf(user.getCreatedDate()));
+
+            ResultSet generatedKeys = pstmt.executeQuery();
+
+            if (generatedKeys.next()) {
+                user.setId(generatedKeys.getInt(1)); // Устанавливаем полученный ID
             }
-        }
-    }
 
-    public void deleteUser(String username) {
-        users.removeIf(u -> u.getUsername().equalsIgnoreCase(username));
-        saveAllUsers();
-    }
-
-    public List<User> getAllUsers() {
-        return new ArrayList<>(users);
-    }
-
-    private void saveAllUsers() {
-        // Используем try-with-resources для автоматического закрытия потоков
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(USERS_FILE))) {
-            oos.writeObject(users);
-        } catch (IOException e) {
-            System.err.println("Error saving users: " + e.getMessage());
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void loadUsers() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(USERS_FILE))) {
-            users = (List<User>) ois.readObject();
-        } catch (FileNotFoundException e) {
-            // Файл не найден, это нормально при первом запуске
-            users = new ArrayList<>();
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error loading users: " + e.getMessage());
-            users = new ArrayList<>();
+        } catch (SQLException e) {
+            System.err.println("Error saving user: " + e.getMessage());
         }
     }
 }
