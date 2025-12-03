@@ -5,20 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13485b96-9e8f-4708-b4f6-29e51edf31d4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/todo/controller/LoginController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/todo/controller/TaskListController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/todo/model/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/todo/service/UserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/example/todo/login.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/example/todo/task-list.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/todo/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/todo/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/todo/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/todo/controller/TaskController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/todo/Launcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/todo/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/todo/model/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/org/example/todo/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/example/todo/todo-list.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,6 +144,7 @@
       <workItem from="1764759166966" duration="2957000" />
       <workItem from="1764763016784" duration="171000" />
       <workItem from="1764763204996" duration="1327000" />
+      <workItem from="1764774065679" duration="1645000" />
     </task>
     <servers />
   </component>
