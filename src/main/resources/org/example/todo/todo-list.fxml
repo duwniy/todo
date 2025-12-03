@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="685.0" maxWidth="685.0"
+            minHeight="685.0" minWidth="685.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.todo.controller.TaskController">
+    <top>
+        <VBox spacing="10" style="-fx-padding: 15; -fx-border-color: #cccccc; -fx-border-width: 0 0 1 0;">
+            <Label style="-fx-font-size: 28; -fx-font-weight: bold;" text="Advanced Todo List" />
+            <Label fx:id="taskCountLabel" style="-fx-font-size: 12; -fx-text-fill: #666666;" text="Tasks: 0 | Completed: 0" />
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="15" style="-fx-padding: 15;">
+
+            <!-- Right Panel: Task Details -->
+            <VBox prefWidth="350" spacing="10" style="-fx-border-color: #cccccc; -fx-border-width: 1 0 0 1; -fx-padding: 15;">
+                <Label style="-fx-font-size: 14; -fx-font-weight: bold;" text="Task Details" />
+
+                <!-- Title -->
+                <VBox spacing="5">
+                    <Label style="-fx-font-size: 11; -fx-font-weight: bold;" text="Title:" />
+                    <TextField fx:id="titleField" promptText="Enter task title..." />
+                </VBox>
+
+                <!-- Description -->
+                <VBox spacing="5" VBox.vgrow="ALWAYS">
+                    <Label style="-fx-font-size: 11; -fx-font-weight: bold;" text="Description:" />
+                    <TextArea fx:id="descriptionArea" promptText="Enter task description..." wrapText="true" VBox.vgrow="ALWAYS" />
+                </VBox>
+
+                <!-- Category -->
+                <VBox spacing="5">
+                    <Label style="-fx-font-size: 11; -fx-font-weight: bold;" text="Category:" />
+                    <ComboBox fx:id="categoryCombo" prefWidth="Infinity" />
+                </VBox>
+
+                <!-- Priority -->
+                <VBox spacing="5">
+                    <Label style="-fx-font-size: 11; -fx-font-weight: bold;" text="Priority:" />
+                    <ComboBox fx:id="priorityCombo" prefWidth="Infinity" />
+                </VBox>
+
+                <!-- Completed -->
+                <CheckBox fx:id="completedCheckBox" text="Mark as completed" />
+
+                <!-- Buttons -->
+                <HBox spacing="10">
+                    <Button onAction="#onAddTaskClick" prefWidth="100" style="-fx-font-size: 11;" text="Add Task" />
+                    <Button onAction="#onUpdateTaskClick" prefWidth="100" style="-fx-font-size: 11;" text="Update" />
+                    <Button onAction="#onDeleteTaskClick" prefWidth="100" style="-fx-font-size: 11;" text="Delete" />
+                </HBox>
+
+                <Separator />
+
+                <HBox spacing="10">
+                    <Button onAction="#onSaveClick" prefWidth="100" style="-fx-font-size: 11;" text="Save All" />
+                    <Button onAction="#onClearAllClick" prefWidth="100" style="-fx-font-size: 11;" text="Clear All" />
+                </HBox>
+            </VBox>
+            <!-- Left Panel: Task List -->
+            <VBox spacing="10">
+                <Label style="-fx-font-size: 14; -fx-font-weight: bold;" text="Task List" />
+
+                <!-- Search and Filter -->
+                <HBox spacing="10">
+                    <TextField fx:id="searchField" promptText="Search tasks..." HBox.hgrow="ALWAYS" />
+                    <ComboBox fx:id="filterCombo" prefWidth="120" />
+                </HBox>
+
+                <!-- Task ListView -->
+                <ListView fx:id="taskListView" style="-fx-font-size: 11;" VBox.vgrow="ALWAYS" />
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

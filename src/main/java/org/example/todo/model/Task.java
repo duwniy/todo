@@ -1,4 +1,4 @@
-package org.example.todo;
+package org.example.todo.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -46,25 +46,57 @@ public class Task implements Serializable {
     }
 
     // Getters and Setters
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public String getTitle() {
+        return title;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public String getDescription() {
+        return description;
+    }
 
-    public Priority getPriority() { return priority; }
-    public void setPriority(Priority priority) { this.priority = priority; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public boolean isCompleted() { return completed; }
-    public void setCompleted(boolean completed) { this.completed = completed; }
+    public String getCategory() {
+        return category;
+    }
 
-    public LocalDateTime getCreatedDate() { return createdDate; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    public LocalDateTime getDueDate() { return dueDate; }
-    public void setDueDate(LocalDateTime dueDate) { this.dueDate = dueDate; }
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
+    }
 
     public String getFormattedCreatedDate() {
         return createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
@@ -77,7 +109,8 @@ public class Task implements Serializable {
 
     @Override
     public String toString() {
-        String status = completed ? "[✓] " : "[ ] ";
-        return status + title + " - " + category + " (" + priority.getDisplayName() + ")";
+        String status = completed ? "[✓] " : "[~] ";
+        String dueDateStr = (dueDate != null) ? " (Due: " + dueDate.toLocalDate().toString() + ")" : "";
+        return status + title + " - " + category + " (" + priority.getDisplayName() + ")" + dueDateStr;
     }
 }
